@@ -6,8 +6,6 @@ import (
 	"math/big"
 )
 
-/* TODO -- clarify constants in Go */
-/* TODO -- consider enum */
 const (
 	ADD       = "ADD"
 	DIVIDE    = "DIVIDE"
