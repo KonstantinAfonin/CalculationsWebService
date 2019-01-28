@@ -13,16 +13,16 @@ const (
 	MULTIPLY  = "MULTIPLY"
 )
 
-func Calculate(operation string, operandA *big.Float, operandB *big.Float) (result *big.Float, err error) {
+func Calculate(operation string, numberA *big.Float, numberB *big.Float) (result *big.Float, err error) {
 	switch operation {
 	case ADD:
-		result, err = new(big.Float).Add(operandA, operandB), nil
+		result, err = new(big.Float).Add(numberA, numberB), nil
 	case SUBSTRACT:
-		result, err = new(big.Float).Sub(operandA, operandB), nil
+		result, err = new(big.Float).Sub(numberA, numberB), nil
 	case MULTIPLY:
-		result, err = new(big.Float).Mul(operandA, operandB), nil
+		result, err = new(big.Float).Mul(numberA, numberB), nil
 	case DIVIDE:
-		result, err = new(big.Float).Quo(operandA, operandB), nil
+		result, err = new(big.Float).Quo(numberA, numberB), nil
 	default:
 		result, err = nil, errors.New(fmt.Sprintf("Invalid operation %v", operation))
 	}

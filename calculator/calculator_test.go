@@ -9,8 +9,8 @@ import (
 
 func TestCalculatorNormalExecution(t *testing.T) {
 	cases := []struct {
-		operation, parameterA, parameterB, expected string
-		expectedErr                                 error
+		operation, numberA, numberB, expected string
+		expectedErr                           error
 	}{
 		{ADD, "100", "200", "300", nil},
 		{ADD, "100.5", "200.22", "300.72", nil},
@@ -28,18 +28,18 @@ func TestCalculatorNormalExecution(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		actual, err := Calculate(c.operation, float(c.parameterA), float(c.parameterB))
+		actual, err := Calculate(c.operation, float(c.numberA), float(c.numberB))
 
 		if !equalResults(float(c.expected), actual) || !equalErrors(c.expectedErr, err) {
 			t.Errorf("Invalid output on Calculate(%v, %v, %v): %v, %v, while expected %v, %v",
-				c.operation, c.parameterA, c.parameterB, actual, err, c.expected, c.expectedErr)
+				c.operation, c.numberA, c.numberB, actual, err, c.expected, c.expectedErr)
 		}
 	}
 }
 
 func TestCalculatorPanics(t *testing.T) {
 	cases := []struct {
-		operation, parameterA, parameterB, expectedErr string
+		operation, numberA, numberB, expectedErr string
 	}{
 		{ADD, "-Inf", "+Inf", "addition of infinities with opposite signs"},
 		{SUBSTRACT, "-Inf", "-Inf", "subtraction of infinities with equal signs"},
@@ -48,7 +48,7 @@ func TestCalculatorPanics(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		actualErr := panicMessage(c.operation, c.parameterA, c.parameterB)
+		actualErr := panicMessage(c.operation, c.numberA, c.numberB)
 
 		if actualErr != c.expectedErr {
 			t.Errorf("expected error: \"%v\", actual error: \"%v\"", c.expectedErr, actualErr)
@@ -56,14 +56,14 @@ func TestCalculatorPanics(t *testing.T) {
 	}
 }
 
-func panicMessage(operation, parameterA, parameterB string) (err string) {
+func panicMessage(operation, numberA, numberB string) (err string) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Sprintf("%v", r)
 		}
 	}()
 
-	Calculate(operation, float(parameterA), float(parameterB))
+	Calculate(operation, float(numberA), float(numberB))
 
 	return
 }
