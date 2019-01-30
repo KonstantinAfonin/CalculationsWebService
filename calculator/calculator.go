@@ -14,6 +14,12 @@ const (
 )
 
 func Calculate(operation string, numberA *big.Float, numberB *big.Float) (result *big.Float, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			result, err = nil, errors.New(fmt.Sprintf("%v", r))
+		}
+	}()
+
 	switch operation {
 	case ADD:
 		result, err = new(big.Float).Add(numberA, numberB), nil
@@ -24,7 +30,7 @@ func Calculate(operation string, numberA *big.Float, numberB *big.Float) (result
 	case DIVIDE:
 		result, err = new(big.Float).Quo(numberA, numberB), nil
 	default:
-		result, err = nil, errors.New(fmt.Sprintf("Invalid operation %v", operation))
+		result, err = nil, errors.New(fmt.Sprintf("Invalid operation \"%v\"", operation))
 	}
 
 	return

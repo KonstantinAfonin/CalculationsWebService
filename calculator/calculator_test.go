@@ -2,12 +2,11 @@ package calculator
 
 import (
 	"errors"
-	"fmt"
-	"math/big"
+	"github.com/KonstantinAfonin/CalculationsWebService/util"
 	"testing"
 )
 
-func TestCalculatorNormalExecution(t *testing.T) {
+func TestCalculate(t *testing.T) {
 	cases := []struct {
 		operation, numberA, numberB, expected string
 		expectedErr                           error
@@ -25,66 +24,18 @@ func TestCalculatorNormalExecution(t *testing.T) {
 		{DIVIDE, "1.2", "3", "0.4", nil},
 		{DIVIDE, "10", "0", "+Inf", nil},
 		{"POW", "0", "0", "<nil>", errors.New("Invalid operation POW")},
+		{ADD, "-Inf", "+Inf", "<nil>", errors.New("addition of infinities with opposite signs")},
+		{SUBSTRACT, "-Inf", "-Inf", "<nil>", errors.New("subtraction of infinities with equal signs")},
+		{MULTIPLY, "0", "+Inf", "<nil>", errors.New("multiplication of zero with infinity")},
+		{DIVIDE, "+Inf", "+Inf", "<nil>", errors.New("division of zero by zero or infinity by infinity")},
 	}
 
 	for _, c := range cases {
-		actual, err := Calculate(c.operation, float(c.numberA), float(c.numberB))
+		actual, err := Calculate(c.operation, util.StringToBigFloat(c.numberA), util.StringToBigFloat(c.numberB))
 
-		if !equalResults(float(c.expected), actual) || !equalErrors(c.expectedErr, err) {
+		if !util.EqualBigFloats(util.StringToBigFloat(c.expected), actual) || !util.EqualErrors(c.expectedErr, err) {
 			t.Errorf("Invalid output on Calculate(%v, %v, %v): %v, %v, while expected %v, %v",
 				c.operation, c.numberA, c.numberB, actual, err, c.expected, c.expectedErr)
 		}
 	}
-}
-
-func TestCalculatorPanics(t *testing.T) {
-	cases := []struct {
-		operation, numberA, numberB, expectedErr string
-	}{
-		{ADD, "-Inf", "+Inf", "addition of infinities with opposite signs"},
-		{SUBSTRACT, "-Inf", "-Inf", "subtraction of infinities with equal signs"},
-		{MULTIPLY, "0", "+Inf", "multiplication of zero with infinity"},
-		{DIVIDE, "+Inf", "+Inf", "division of zero by zero or infinity by infinity"},
-	}
-
-	for _, c := range cases {
-		actualErr := panicMessage(c.operation, c.numberA, c.numberB)
-
-		if actualErr != c.expectedErr {
-			t.Errorf("expected error: \"%v\", actual error: \"%v\"", c.expectedErr, actualErr)
-		}
-	}
-}
-
-func panicMessage(operation, numberA, numberB string) (err string) {
-	defer func() {
-		if r := recover(); r != nil {
-			err = fmt.Sprintf("%v", r)
-		}
-	}()
-
-	Calculate(operation, float(numberA), float(numberB))
-
-	return
-}
-
-func equalResults(expected, actual *big.Float) bool {
-	if expected == nil || actual == nil {
-		return expected == actual
-	} else {
-		return expected.Cmp(actual) == 0
-	}
-}
-
-func equalErrors(first, second error) bool {
-	if first == nil || second == nil {
-		return first == second
-	} else {
-		return first.(error).Error() == second.(error).Error()
-	}
-}
-
-func float(from string) *big.Float {
-	f, _, _ := new(big.Float).Parse(from, 0)
-	return f
 }
