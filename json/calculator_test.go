@@ -1,33 +1,41 @@
 package json
 
 import (
-	"encoding/json"
+	"errors"
 	"fmt"
+	"github.com/KonstantinAfonin/CalculationsWebService/util"
+	"math"
 	"testing"
 )
 
-func TestCalculateRequestUnmarshal(t *testing.T) {
+func TestCalculate(t *testing.T) {
 
-	jsonString := "{\"number_a\": 2,\"number_b\": 8,\"operation\": \"ADD\"}"
+	cases := []struct {
+		requestJson, expectedResponseJson string
+		expectedError                     error
+	}{
+		{"{\"number_a\": 2,\"number_b\": 8,\"operation\": \"ADD\"}", "{\"result\":10}", nil},
+		{"{\"number_a\": 2,\"number_b\": 8,\"operation\": \"MULTIPLY\"}", "{\"result\":16}", nil},
+		{"{\"number_a\": 999.999,\"number_b\": 0.001,\"operation\": \"    aDd    \"}", "{\"result\":1000}", nil},
 
-	request := new(CalculateRequest)
+		{"{\"number_a\": 2,\"number_b\": 8,\"operation\": \"POW\"}", "{\"result\":0}",
+			errors.New("invalid operation \"POW\"")},
+		{fmt.Sprintf("{\"number_a\": %v,\"number_b\": 8,\"operation\": \"MULTIPLY\"}", math.MaxFloat64), "{\"result\":0}",
+			errors.New("1.4381545078898526e+309 value doesn't fit into float64")},
+	}
 
-	_ = json.Unmarshal([]byte(jsonString), request)
+	for _, c := range cases {
 
-	fmt.Printf("request: %v, getOperation: %v", request, request.GetOperation())
+		request := unmarshalJson(c.requestJson)
 
-}
+		response, err := Calculate(request)
 
-func TestCalculateResponseMarshal(t *testing.T) {
+		actualResponseJson := marshalJson(response)
 
-	//small, _ := util.BigFloat("+Inf").Float64()
-	//fmt.Printf("small %v, isNaN %v", small, math.IsInf(small, 0))
-	//
-	////float := util.BigFloat("100")
-	//response := CalculateResponse{small, ""}
-	////response.setError(errors.New("some error"))
-	//
-	//bytes, _ := json.Marshal(response)
-	//
-	//fmt.Printf("response: \"%v\"", string(bytes))
+		if c.expectedResponseJson != actualResponseJson || !util.EqualErrors(c.expectedError, err) {
+			fmt.Printf("Invalid result. request: \"%v\", expected response: \"%v\", expected error: \"%v\", actual response: \"%v\", actual error: \"%v\"",
+				c.requestJson, c.expectedResponseJson, c.expectedError, actualResponseJson, err)
+		}
+	}
+
 }

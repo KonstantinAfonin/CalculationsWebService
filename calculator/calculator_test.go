@@ -23,7 +23,7 @@ func TestCalculate(t *testing.T) {
 		{DIVIDE, "100", "4", "25", nil},
 		{DIVIDE, "1.2", "3", "0.4", nil},
 		{DIVIDE, "10", "0", "+Inf", nil},
-		{"POW", "0", "0", "<nil>", errors.New("Invalid operation POW")},
+		{"POW", "0", "0", "<nil>", errors.New("invalid operation \"POW\"")},
 		{ADD, "-Inf", "+Inf", "<nil>", errors.New("addition of infinities with opposite signs")},
 		{SUBSTRACT, "-Inf", "-Inf", "<nil>", errors.New("subtraction of infinities with equal signs")},
 		{MULTIPLY, "0", "+Inf", "<nil>", errors.New("multiplication of zero with infinity")},

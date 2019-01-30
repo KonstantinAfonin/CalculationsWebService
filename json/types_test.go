@@ -1,12 +1,12 @@
 package json
 
 import (
-	"encoding/json"
+	"errors"
 	"github.com/KonstantinAfonin/CalculationsWebService/util"
 	"testing"
 )
 
-func TestCalculateRequest(t *testing.T) {
+func TestCalculateRequestUnmarshal(t *testing.T) {
 
 	cases := []struct {
 		jsonString, expectedOperation, expectedNumberA, expectedNumberB string
@@ -17,40 +17,45 @@ func TestCalculateRequest(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		request := new(CalculateRequest)
-		_ = json.Unmarshal([]byte(c.jsonString), request)
 
-		requestA := request.GetNumberA()
-		requestB := request.GetNumberB()
-		requestOperation := request.GetOperation()
+		request := unmarshalJson(c.jsonString)
 
-		wrongNumberA := !util.EqualBigFloats(requestA, util.StringToBigFloat(c.expectedNumberA))
-		wrongNumberB := !util.EqualBigFloats(requestB, util.StringToBigFloat(c.expectedNumberB))
-		wrongOperation := requestOperation != c.expectedOperation
+		numberA := request.GetNumberA()
+		numberB := request.GetNumberB()
+		operation := request.GetOperation()
+
+		wrongNumberA := !util.EqualBigFloats(numberA, util.StringToBigFloat(c.expectedNumberA))
+		wrongNumberB := !util.EqualBigFloats(numberB, util.StringToBigFloat(c.expectedNumberB))
+		wrongOperation := operation != c.expectedOperation
 
 		if wrongNumberA || wrongNumberB || wrongOperation {
 			t.Errorf("Invalid output for \"%v\" JSON. Expected: \"%v\", %v, %v; Actual: \"%v\", %v, %v",
 				c.jsonString,
 				c.expectedOperation, c.expectedNumberA, c.expectedNumberB,
-				requestOperation, requestA, requestB)
+				operation, numberA, numberB)
 		}
 	}
 }
 
-func TestCalculateResponse(t *testing.T) {
-	//cases := []struct {
-	//	result, expectedJson string
-	//	expectedError        error
-	//}{
-	//	{},
-	//}
-	//
-	//for _, c := range cases {
-	//
-	//	response := new(CalculateResponse)
-	//	err := response.setResult(util.StringToBigFloat(c.result))
-	//	bytes, _ := json.Marshal(response)
-	//
-	//	if (!util.EqualErrors(c.expectedError, err) || )
-	//}
+func TestCalculateResponseMarshal(t *testing.T) {
+	cases := []struct {
+		result, expectedJson string
+		expectedError        error
+	}{
+		{"+Inf", "{\"result\":0}", errors.New("+Inf value doesn't fit into float64")},
+		{"1e+500", "{\"result\":0}", errors.New("1e+500 value doesn't fit into float64")},
+		{"100", "{\"result\":100}", nil},
+		{"100.5", "{\"result\":100.5}", nil},
+	}
+
+	for _, c := range cases {
+		response := new(CalculateResponse)
+		err := response.setResult(util.StringToBigFloat(c.result))
+		actualJson := marshalJson(response)
+
+		if !util.EqualErrors(c.expectedError, err) || actualJson != c.expectedJson {
+			t.Errorf("Invalid output for \"%v\" result. Expected JSON: \"%v\", expected error: \"%v\", actual JSON: \"%v\", actual error: \"%v\"",
+				c.result, c.expectedJson, c.expectedError, actualJson, err)
+		}
+	}
 }

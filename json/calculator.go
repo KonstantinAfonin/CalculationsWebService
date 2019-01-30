@@ -12,7 +12,7 @@ func Calculate(request *CalculateRequest) (response *CalculateResponse, err erro
 
 	bigFloatResult, err := calculator.Calculate(operation, numberA, numberB)
 
-	if err != nil {
+	if err == nil {
 		err = response.setResult(bigFloatResult)
 	}
 

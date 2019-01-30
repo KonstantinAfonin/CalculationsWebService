@@ -30,7 +30,7 @@ func Calculate(operation string, numberA *big.Float, numberB *big.Float) (result
 	case DIVIDE:
 		result, err = new(big.Float).Quo(numberA, numberB), nil
 	default:
-		result, err = nil, errors.New(fmt.Sprintf("Invalid operation \"%v\"", operation))
+		result, err = nil, errors.New(fmt.Sprintf("invalid operation \"%v\"", operation))
 	}
 
 	return
