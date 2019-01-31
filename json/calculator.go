@@ -1,6 +1,6 @@
 package json
 
-import "github.com/KonstantinAfonin/CalculationsWebService/calculator"
+import "github.com/KonstantinAfonin/CalculatorLambdaHandler/calculator"
 
 func Calculate(request *CalculateRequest) (response *CalculateResponse, err error) {
 

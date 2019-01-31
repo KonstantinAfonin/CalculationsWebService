@@ -1,7 +1,7 @@
 package json
 
 import (
-	"github.com/KonstantinAfonin/CalculationsWebService/util"
+	"github.com/KonstantinAfonin/CalculatorLambdaHandler/util"
 	"math/big"
 	"strings"
 )

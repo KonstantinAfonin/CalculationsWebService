@@ -2,7 +2,7 @@ package json
 
 import (
 	"errors"
-	"github.com/KonstantinAfonin/CalculationsWebService/util"
+	"github.com/KonstantinAfonin/CalculatorLambdaHandler/util"
 	"testing"
 )
 
@@ -54,7 +54,7 @@ func TestCalculateResponseMarshal(t *testing.T) {
 		actualJson := marshalJson(response)
 
 		if !util.EqualErrors(c.expectedError, err) || actualJson != c.expectedJson {
-			t.Errorf("Invalid output for \"%v\" result. Expected JSON: \"%v\", expected error: \"%v\", actual JSON: \"%v\", actual error: \"%v\"",
+			t.Errorf("Invalid output for '%v' result. Expected JSON: '%v', expected error: '%v', actual JSON: '%v', actual error: '%v'",
 				c.result, c.expectedJson, c.expectedError, actualJson, err)
 		}
 	}

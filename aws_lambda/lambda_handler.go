@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/KonstantinAfonin/CalculationsWebService/json"
+	"github.com/KonstantinAfonin/CalculatorLambdaHandler/json"
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
