@@ -19,12 +19,11 @@ as `*big.Float` parameters and returns result as another `big.Float` value.
 
 Supported operations are exposed as constants in the package.
 
-`big.Float` was chosen as the type for parameters and result both because it can handle huge numbers 
-and because it handles some situation better than primitives (for instance, division by zero
-produces `+-Inf` instead of panic, which seem more mathematically correct).
-The obvious downside might be performance, yet in case of optimization function's signature can be
-changed with minimum changes of client code, as all the computation-related logic is encapsulated within
-the function.
+`big.Float` was chosen as the type for parameters and result mostly because it handles corner cases better 
+(for instance, division of infinity by infinity fails with clear message instead of just returning NaN as `float64`).
+It also gives opportunity to use bigger numbers, but it is usually rather minor advantage as `float64` range
+is good enough for overwhelming majority of pragmatic cases. 
+The obvious downside is performance though, yet it was considered acceptable in regards to the entire scenario.
 
 Panics produced by `big.Float` methods are wrapped and returned as `error` so that the function
 returns normally in any case.  
