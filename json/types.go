@@ -1,7 +1,10 @@
 package json
 
 import (
+	"errors"
+	"fmt"
 	"github.com/KonstantinAfonin/CalculatorLambdaHandler/util"
+	"math"
 	"math/big"
 	"strings"
 )
@@ -28,13 +31,17 @@ func (request *CalculateRequest) GetNumberB() *big.Float {
 	return util.Float64ToBigFloat(request.NumberB)
 }
 
-func (response *CalculateResponse) setResult(result *big.Float) (err error) {
-	var floatNumber float64
-	floatNumber, err = util.BigFloatToFloat64(result)
+func (response *CalculateResponse) setResult(result *big.Float) error {
 
-	if err == nil {
-		response.Result = floatNumber
+	floatNumber, err := util.BigFloatToFloat64(result)
+	if err != nil {
+		return err
 	}
 
-	return
+	if math.IsInf(floatNumber, 0) {
+		return errors.New(fmt.Sprintf("%v value doesn't fit JSON number type", floatNumber))
+	}
+
+	response.Result = floatNumber
+	return nil
 }

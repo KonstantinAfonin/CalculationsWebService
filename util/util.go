@@ -17,9 +17,15 @@ func Float64ToBigFloat(number float64) *big.Float {
 }
 
 func BigFloatToFloat64(from *big.Float) (result float64, err error) {
+
+	if from.IsInf() {
+		result = math.Inf(from.Sign())
+		return
+	}
+
 	result, _ = from.Float64()
 	if math.IsInf(result, 0) {
-		err = errors.New(fmt.Sprintf("%v value doesn't fit into float64", from))
+		err = errors.New(fmt.Sprintf("%v value doesn't fit float64 type", from))
 	}
 
 	return

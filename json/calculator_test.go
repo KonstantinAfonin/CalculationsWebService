@@ -21,7 +21,7 @@ func TestCalculate(t *testing.T) {
 		{"{\"number_a\": 2,\"number_b\": 8,\"operation\": \"POW\"}", "{\"result\":0}",
 			errors.New("invalid operation 'POW'")},
 		{fmt.Sprintf("{\"number_a\": %v,\"number_b\": 8,\"operation\": \"MULTIPLY\"}", math.MaxFloat64), "{\"result\":0}",
-			errors.New("1.4381545078898526e+309 value doesn't fit into float64")},
+			errors.New("1.4381545078898526e+309 value doesn't fit float64 type")},
 	}
 
 	for _, c := range cases {
