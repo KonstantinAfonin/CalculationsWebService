@@ -25,7 +25,7 @@ func BigFloatToFloat64(from *big.Float) (result float64, err error) {
 
 	result, _ = from.Float64()
 	if math.IsInf(result, 0) {
-		err = errors.New(fmt.Sprintf("%v value doesn't fit float64 type", from))
+		err = errors.New(fmt.Sprintf("%v value doesn't fit into float64 type", from))
 	}
 
 	return

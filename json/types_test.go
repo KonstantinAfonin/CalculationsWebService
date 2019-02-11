@@ -42,8 +42,8 @@ func TestCalculateResponseMarshal(t *testing.T) {
 		result, expectedJson string
 		expectedError        error
 	}{
-		{"+Inf", "{\"result\":0}", errors.New("+Inf value doesn't fit JSON number type")},
-		{"1e+500", "{\"result\":0}", errors.New("1e+500 value doesn't fit float64 type")},
+		{"+Inf", "{\"result\":0}", errors.New("+Inf value doesn't fit into JSON number type")},
+		{"1e+500", "{\"result\":0}", errors.New("1e+500 value doesn't fit into float64 type")},
 		{"100", "{\"result\":100}", nil},
 		{"100.5", "{\"result\":100.5}", nil},
 	}

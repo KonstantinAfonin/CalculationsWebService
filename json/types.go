@@ -39,7 +39,7 @@ func (response *CalculateResponse) setResult(result *big.Float) error {
 	}
 
 	if math.IsInf(floatNumber, 0) {
-		return errors.New(fmt.Sprintf("%v value doesn't fit JSON number type", floatNumber))
+		return errors.New(fmt.Sprintf("%v value doesn't fit JSON into number type", floatNumber))
 	}
 
 	response.Result = floatNumber

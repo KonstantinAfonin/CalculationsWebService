@@ -19,7 +19,7 @@ func TestBigFloatToFloat64(t *testing.T) {
 
 		{StringToBigFloat("-Inf"), math.Inf(-1), nil},
 		{StringToBigFloat("+Inf"), math.Inf(1), nil},
-		{StringToBigFloat("1e+500"), math.Inf(1), errors.New("1e+500 value doesn't fit float64 type")},
+		{StringToBigFloat("1e+500"), math.Inf(1), errors.New("1e+500 value doesn't fit into float64 type")},
 	}
 
 	for _, c := range cases {
