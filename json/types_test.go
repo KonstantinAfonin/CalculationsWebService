@@ -6,12 +6,32 @@ import (
 	"testing"
 )
 
+func TestCalculateRequest_Validate(t *testing.T) {
+	cases := []struct {
+		jsonString    string
+		expectedError error
+	}{
+		{"", errors.New("invalid JSON provided: missing fields: number_a, number_b, operation")},
+		{`{"number_a": 2,"number_b": "8","operation": "ADD"}`, errors.New(`invalid JSON provided: invalid 'number_b' type: string`)},
+		{`{"number_a": 2,"number_c": 8,"operation": "ADD"}`, errors.New(`invalid JSON provided: missing fields: number_b; extra fields: number_c`)},
+		{`{"number_a": 2,"number_b": 8,"operation": "ADD"}`, nil},
+	}
+
+	for _, c := range cases {
+		request := unmarshalJson(c.jsonString)
+		err := request.Validate()
+
+		if !util.EqualErrors(c.expectedError, err) {
+			t.Errorf("Invalid error. Expected: %v, Actual: %v", c.expectedError, err)
+		}
+	}
+}
+
 func TestCalculateRequestUnmarshal(t *testing.T) {
 
 	cases := []struct {
 		jsonString, expectedOperation, expectedNumberA, expectedNumberB string
 	}{
-		{"", "", "0", "0"},
 		{"{\"number_a\": 2,\"number_b\": 8,\"operation\": \"ADD\"}", "ADD", "2", "8"},
 		{"{\"number_a\": 1.5,\"number_b\": 2.5,\"operation\": \"  DiViDe  \"}", "DIVIDE", "1.5", "2.5"},
 	}

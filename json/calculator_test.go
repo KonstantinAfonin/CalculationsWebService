@@ -14,13 +14,15 @@ func TestCalculate(t *testing.T) {
 		requestJson, expectedResponseJson string
 		expectedError                     error
 	}{
-		{"{\"number_a\": 2,\"number_b\": 8,\"operation\": \"ADD\"}", "{\"result\":10}", nil},
-		{"{\"number_a\": 2,\"number_b\": 8,\"operation\": \"MULTIPLY\"}", "{\"result\":16}", nil},
-		{"{\"number_a\": 999.999,\"number_b\": 0.001,\"operation\": \"    aDd    \"}", "{\"result\":1000}", nil},
+		{`{"number_a": 2,"number_b": 8,"operation": "ADD"}`, `{"result":10}`, nil},
+		{`{"number_a": 2,"number_b": 8,"operation": "MULTIPLY"}`, `{"result":16}`, nil},
+		{`{"number_a": 999.999,"number_b": 0.001,"operation": "    aDd    "}`, `{"result":1000}`, nil},
 
-		{"{\"number_a\": 2,\"number_b\": 8,\"operation\": \"POW\"}", "{\"result\":0}",
-			errors.New("invalid operation 'POW'")},
-		{fmt.Sprintf("{\"number_a\": %v,\"number_b\": 8,\"operation\": \"MULTIPLY\"}", math.MaxFloat64), "{\"result\":0}",
+		{`{"number_a": 2,"number_b": "8","operation": "ADD"}`, `null`,
+			errors.New("invalid JSON provided: invalid 'number_b' type: string")},
+		{`{"number_a": 2,"number_b": 8,"operation": "POW"}`, `null`, errors.New("invalid operation 'POW'")},
+		{"", "null", errors.New(`invalid JSON provided: missing fields: number_a, number_b, operation`)},
+		{fmt.Sprintf(`{"number_a": %v,"number_b": 8,"operation": "MULTIPLY"}`, math.MaxFloat64), `{"result":0}`,
 			errors.New("1.4381545078898526e+309 value doesn't fit into float64 type")},
 	}
 
