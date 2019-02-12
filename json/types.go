@@ -24,9 +24,9 @@ type CalculateResponse struct {
 
 func (request *CalculateRequest) Validate() (err error) {
 
-	var validationErrors []string
-	var missingFields []string
-	var extraFields []string
+	var validationErrors = make([]string, 0, 0)
+	var missingFields = make([]string, 0, 0)
+	var extraFields = make([]string, 0, 0)
 
 	underlyingMap := map[string]interface{}(*request)
 
